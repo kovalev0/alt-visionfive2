@@ -1,0 +1,13 @@
+fdt_high=0xffffffffffffffff
+initrd_high=0xffffffffffffffff
+kernel_addr_r=0x40200000
+kernel_comp_addr_r=0x5a000000
+kernel_comp_size=0x4000000
+fdt_addr_r=0x46000000
+ramdisk_addr_r=0x46100000
+# Move distro to first boot to speed up booting
+boot_targets=distro mmc0 dhcp 
+# fdtfile name
+fdtfile=jh7110-starfive-visionfive-2-v1.3b.dtb
+# Fix missing bootcmd
+bootcmd=run load_distro_uenv;run bootcmd_distro
