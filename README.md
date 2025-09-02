@@ -56,7 +56,7 @@ sudo mkfs.ext4 -L       ROOTFS ${DEVICE}4
 
 ### 3. Deploy ALT Linux Root Filesystem
 
-Mount the newly created partitions and extract the ALT Linux rootfs tarball.
+Mount the newly created partitions and extract the ALT Linux [rootfs tarball](https://nightly.altlinux.org/sisyphus-riscv64/current/).
 
 ```bash
 # Create mount points
@@ -139,7 +139,7 @@ control sudowheel enabled
 
 ## Building a Custom Kernel (Optional)
 
-The default kernel might have issues with graphics. For a better experience, you can build and install a custom kernel using the [gear-hsh-wrapper](https://github.com/kovalev0/gear-hsh-wrapper).
+The default kernel might have issues with graphics. For a better experience, you can build and install a custom kernel ([6.12-forge](https://git.altlinux.org/people/kovalev/packages/kernel-image.git?p=kernel-image.git;a=shortlog;h=refs/heads/alt-JH7110_VisionFive2_6.12.y_devel))  using the [gear-hsh-wrapper](https://github.com/kovalev0/gear-hsh-wrapper).
 
 ### 1. Build the Kernel
 
