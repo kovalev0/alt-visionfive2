@@ -105,15 +105,9 @@ $ sudo find /mnt/alt_root -name 'jh7110-starfive-visionfive-2-v1.3b.dtb' -exec c
 $ sudo cp -r ./boot/* /mnt/alt_boot/
 ```
 
-Configure `apt` repositories and `fstab`.
+Configure `fstab`.
 
 ```bash
-# Set up APT repositories
-$ sudo tee /mnt/alt_root/etc/apt/sources.list <<EOF
-rpm [http://ftp.altlinux.org/pub/distributions/ALTLinux/ports/riscv64](http://ftp.altlinux.org/pub/distributions/ALTLinux/ports/riscv64) Sisyphus/riscv64 classic
-rpm [http://ftp.altlinux.org/pub/distributions/ALTLinux/ports/riscv64](http://ftp.altlinux.org/pub/distributions/ALTLinux/ports/riscv64) Sisyphus/noarch  classic
-EOF
-
 # Create a mount point for the boot partition inside the rootfs
 $ sudo mkdir -p /mnt/alt_root/boot/BOOT
 
