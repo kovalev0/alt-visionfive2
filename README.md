@@ -166,7 +166,8 @@ the VisionFive2.
 $ echo "wlimit_time_short=180" >> ~/.hasher/config
 
 # Clone the kernel source git repository
-$ git clone --branch alt-JH7110_VisionFive2_6.12.y_devel http://git.altlinux.org/people/kovalev/packages/kernel-image.git
+# http://git.altlinux.org/people/kovalev/packages/kernel-image.git
+$ git clone --branch alt-JH7110_VisionFive2_6.12.y_devel git://git.altlinux.org/people/kovalev/packages/kernel-image.git
 $ cd kernel-image
 
 # Specify the kernel flavour
