@@ -23,6 +23,9 @@ First, identify your SD card device (e.g., `/dev/sdX`).
 data on the specified device.
 
 ```bash
+# Install the packages that provide programs for working with the image
+$ sudo apt-get update && apt-get install gdisk parted dosfstools e2fsprogs kpartx
+
 # Replace /dev/sdb with your actual SD card device
 $ DEVICE=/dev/sdb
 
@@ -69,7 +72,7 @@ Mount the newly created partitions and extract the ALT Linux
 
 ```bash
 # Create mount points
-$ mkdir -p /mnt/alt_boot /mnt/alt_root
+$ sudo mkdir -p /mnt/alt_boot /mnt/alt_root
 
 # Mount the partitions
 $ sudo mount ${DEVICE}3 /mnt/alt_boot
