@@ -1,3 +1,5 @@
+🌐 **Language / Язык**: **English** | [Русский](./README_ru.md)
+
 # ALT Linux for VisionFive2
 
 This repository provides instructions, configuration files, and
