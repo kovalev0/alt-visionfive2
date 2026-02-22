@@ -1,6 +1,6 @@
 # Подготовка рабочего места
 
-[На главную](INDEX.md)
+[На главную](INDEX.md) · [Урок 01 →](lab01-board/README.md)
 
 ---
 
@@ -605,4 +605,4 @@ $ sudo losetup -d $DEVICE
 
 ---
 
-[На главную](INDEX.md)
+[На главную](INDEX.md) · [Урок 01 →](lab01-board/README.md)
