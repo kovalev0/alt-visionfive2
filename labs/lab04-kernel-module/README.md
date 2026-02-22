@@ -1,6 +1,6 @@
 # Урок 04: Модуль ядра + sysfs + ftrace
 
-← [Урок 03](../lab03-boot/README.md) · [На главную](../INDEX.md)
+← [Урок 03](../lab03-boot/README.md) · [На главную](../INDEX.md) · [Урок 05 →](../lab05-gpio/README.md)
 
 ---
 
