@@ -1,6 +1,6 @@
 # module4 · Системные вызовы: ecall, таблица, strace
 
-← [Назад](module3-assembly.md) · [На главную](../INDEX.md)
+← [Назад](module3-assembly.md) · [На главную](../INDEX.md) · [Урок 03 →](../lab03-boot/README.md)
 
 > **Kernel source:** `arch/riscv/kernel/syscall_table.c`
 > [elixir.bootlin.com/linux/v6.12/source/arch/riscv/kernel/syscall_table.c](https://elixir.bootlin.com/linux/v6.12/source/arch/riscv/kernel/syscall_table.c)
@@ -248,4 +248,4 @@ $ sudo cat /sys/kernel/debug/tracing/trace | grep -A 1 "hello.*sys_write"
 
 ---
 
-← [Назад](module3-assembly.md) · [На главную](../INDEX.md)
+← [Назад](module3-assembly.md) · [На главную](../INDEX.md) · [Урок 03 →](../lab03-boot/README.md)

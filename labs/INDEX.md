@@ -72,6 +72,14 @@ labs/
 │   ├── module2-registers.md        Регистры, ABI, соглашение о вызовах
 │   ├── module3-assembly.md         Первая программа на ассемблере в userspace
 │   └── module4-syscalls.md         Системные вызовы: ecall, таблица, strace
+
+├── lab03-boot/                     ← Урок 03: Загрузка платы
+│   ├── README.md
+│   ├── module1-boot-sequence.md    От подачи питания до ядра: BootROM → SPL → OpenSBI → U-Boot → Linux
+│   ├── module2-privilege-levels.md Уровни привилегий RISC-V: M/S/U и переходы между ними
+│   ├── module3-opensbi.md          OpenSBI: SBI-интерфейс, вызовы, роль прошивки
+│   ├── module4-uboot.md            U-Boot: extlinux.conf, переменные окружения, FIT-образ
+│   └── module5-devicetree.md       Device Tree: синтаксис, компиляция, реальные узлы GPIO/I2C/SPI
 ```
 
 ---
