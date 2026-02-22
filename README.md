@@ -2,9 +2,10 @@
 
 # ALT Linux for VisionFive2
 
-This repository provides instructions, configuration files, and
-pre-built firmware to deploy ALT Linux on the StarFive VisionFive2
-RISC-V board.
+This repository contains materials for the
+**[Low-Level Programming course (RU)](./labs/INDEX.md)**, including
+instructions, configuration files, and ready-to-use firmware for
+deploying ALT Linux on the StarFive VisionFive2 board (RISC-V).
 
 The instructions are divided into three main parts:
 1.  **[Quick Start](#quick-start)**: Use pre-built firmware and configuration files from this repository to get ALT Linux running quickly.
