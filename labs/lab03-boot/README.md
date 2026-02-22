@@ -1,6 +1,6 @@
 # Урок 03: Загрузка платы
 
-← [Урок 02](../lab02-riscv/README.md) · [На главную](../INDEX.md)
+← [Урок 02](../lab02-riscv/README.md) · [На главную](../INDEX.md) · [Урок 04 →](../lab04-kernel-module/README.md)
 
 ---
 

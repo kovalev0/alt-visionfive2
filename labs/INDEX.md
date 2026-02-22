@@ -80,6 +80,14 @@ labs/
 │   ├── module3-opensbi.md          OpenSBI: SBI-интерфейс, вызовы, роль прошивки
 │   ├── module4-uboot.md            U-Boot: extlinux.conf, переменные окружения, FIT-образ
 │   └── module5-devicetree.md       Device Tree: синтаксис, компиляция, реальные узлы GPIO/I2C/SPI
+
+├── lab04-kernel-module/            ← Урок 04: Модуль ядра + sysfs + ftrace
+│   ├── README.md
+│   ├── module1-lkm-basics.md       Структура модуля: init/exit, Makefile, insmod/rmmod
+│   ├── module2-sysfs-params.md     sysfs-атрибуты и параметры модуля (module_param)
+│   ├── module3-counter-module.md   Практика: модуль-счётчик с несколькими функциями и управлением из sysfs
+│   └── module4-ftrace.md           ftrace: function/function_graph трассировщики,
+│                                   инструментация на уровне ассемблера RISC-V
 ```
 
 ---

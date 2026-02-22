@@ -1,6 +1,6 @@
 # module5 · Device Tree: синтаксис, компиляция, реальные узлы
 
-← [Назад](module4-uboot.md) · [На главную](../INDEX.md)
+← [Назад](module4-uboot.md) · [На главную](../INDEX.md) · [Урок 04 →](../lab04-kernel-module/README.md)
 
 > **Kernel docs:** [kernel.org/doc/html/latest/devicetree/usage-model.html](https://www.kernel.org/doc/html/latest/devicetree/usage-model.html)
 
@@ -308,4 +308,4 @@ done
 
 ---
 
-← [Назад](module4-uboot.md) · [На главную](../INDEX.md)
+← [Назад](module4-uboot.md) · [На главную](../INDEX.md) · [Урок 04 →](../lab04-kernel-module/README.md)
