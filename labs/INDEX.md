@@ -88,6 +88,16 @@ labs/
 │   ├── module3-counter-module.md   Практика: модуль-счётчик с несколькими функциями и управлением из sysfs
 │   └── module4-ftrace.md           ftrace: function/function_graph трассировщики,
 │                                   инструментация на уровне ассемблера RISC-V
+
+├── lab05-gpio/                     ← Урок 05: GPIO
+│   ├── README.md
+│   ├── module1-theory.md           Теория: регистры GPIO-контроллера JH7110, подсистема ядра
+│   ├── module2-virtual-gpio.md     Виртуальный GPIO: gpio-mockup + debugfs
+│   ├── module3-sysfs-gpio.md       Legacy-интерфейс /sys/class/gpio (deprecated)
+│   ├── module4-driver-gpio.md      Модуль ядра: loopback OUT→IN, gpiod API
+│   ├── module5-pwm-generator.md    Программный ШИМ: модуль ядра генерирует меандр, управление через sysfs
+│   ├── module6-terminal-scope.md   Терминальный осциллограф: ASCII-визуализация сигнала в реальном времени
+│   └── module7-oscilloscope.md     Наблюдение сигнала на осциллографе + ftrace
 ```
 
 ---

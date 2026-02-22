@@ -1,6 +1,6 @@
 # module4 · ftrace: трассировка ядра и ассемблерная инструментация RISC-V
 
-← [Назад](module3-counter-module.md) · [На главную](../INDEX.md)
+← [Назад](module3-counter-module.md) · [На главную](../INDEX.md) · [Урок 05 →](../lab05-gpio/README.md)
 
 > **Kernel docs:** [kernel.org/doc/html/latest/trace/ftrace.html](https://www.kernel.org/doc/html/latest/trace/ftrace.html)
 
@@ -701,4 +701,4 @@ $ sudo rmmod my_counter
 
 ---
 
-← [Назад](module3-counter-module.md) · [На главную](../INDEX.md)
+← [Назад](module3-counter-module.md) · [На главную](../INDEX.md) · [Урок 05 →](../lab05-gpio/README.md)
