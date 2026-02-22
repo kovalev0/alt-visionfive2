@@ -1,6 +1,6 @@
 # module4 · Pinmux и pinctrl: управление мультиплексированием
 
-← [Назад](module3-pinout.md) · [На главную](../INDEX.md)
+← [Назад](module3-pinout.md) · [На главную](../INDEX.md) · [Урок 02 →](../lab02-riscv/README.md)
 
 > **Kernel source:** `drivers/pinctrl/starfive/pinctrl-starfive-jh7110-sys.c`
 > [elixir.bootlin.com/linux/v6.12/source/drivers/pinctrl/starfive](https://elixir.bootlin.com/linux/v6.12/source/drivers/pinctrl/starfive)
@@ -321,4 +321,4 @@ $ sudo cat /sys/kernel/debug/pinctrl/13040000.pinctrl/pinmux-functions
 ```
 ---
 
-← [Назад](module3-pinout.md) · [На главную](../INDEX.md)
+← [Назад](module3-pinout.md) · [На главную](../INDEX.md) · [Урок 02 →](../lab02-riscv/README.md)

@@ -65,6 +65,13 @@ labs/
 │   ├── module2-jh7110.md           SoC JH7110: ядра, шины, карта адресного пространства
 │   ├── module3-pinout.md           GPIO40: назначение пинов, альтернативные функции
 │   └── module4-pinmux.md           Pinmux и pinctrl: как Linux управляет мультиплексированием
+
+├── lab02-riscv/                    ← Урок 02: Архитектура RISC-V
+│   ├── README.md
+│   ├── module1-isa.md              ISA: RV64GC, расширения, отличия от x86/ARM
+│   ├── module2-registers.md        Регистры, ABI, соглашение о вызовах
+│   ├── module3-assembly.md         Первая программа на ассемблере в userspace
+│   └── module4-syscalls.md         Системные вызовы: ecall, таблица, strace
 ```
 
 ---
