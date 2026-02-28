@@ -26,7 +26,7 @@
 
 ```bash
 # Установите пакеты, предоставляющие необходимые утилиты для работы с образом
-$ sudo apt-get update && apt-get install gdisk parted dosfstools e2fsprogs kpartx
+$ sudo apt-get update && sudo apt-get install gdisk parted dosfstools e2fsprogs kpartx
 
 # Замените /dev/sdb на фактическое устройство вашей SD-карты
 $ DEVICE=/dev/sdb

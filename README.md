@@ -26,7 +26,7 @@ data on the specified device.
 
 ```bash
 # Install the packages that provide programs for working with the image
-$ sudo apt-get update && apt-get install gdisk parted dosfstools e2fsprogs kpartx
+$ sudo apt-get update && sudo apt-get install gdisk parted dosfstools e2fsprogs kpartx
 
 # Replace /dev/sdb with your actual SD card device
 $ DEVICE=/dev/sdb
