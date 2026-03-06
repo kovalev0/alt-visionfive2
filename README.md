@@ -365,3 +365,7 @@ The two resulting firmware files are:
 
 You can now use these files in the
 [Quick Start](#2-flash-firmware-and-create-filesystems) section.
+
+## License
+This project is licensed under the GNU General Public License v3.0.
+See the LICENSE file for details.
