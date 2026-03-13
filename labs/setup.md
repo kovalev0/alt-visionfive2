@@ -6,6 +6,8 @@
 
 ## Содержание
 
+### Обязательно
+
 1. [Подготовка образа ALT](#1-подготовка-образа-alt)
 2. [Запись образа на micro-SD карту](#2-запись-образа-на-micro-sd-карту)
 3. [Подключение к консоли](#3-подключение-к-консоли)
@@ -15,15 +17,19 @@
 5. [Проверка окружения на плате](#5-проверка-окружения-на-плате)
 6. [Установка инструментов](#6-установка-инструментов)
 7. [Настройка окружения для сборки модулей](#7-настройка-окружения-для-сборки-модулей)
-8. [Перенос корневой системы на NVMe SSD (опционально)](#8-Перенос-корневой-системы-на-NVMe-SSD-опционально)
-9. [Правка образа (для разработчиков)](#9-правка-образа-для-разработчиков)
 
+###  Дополнительно
+
+8. [Перенос корневой системы на NVMe SSD](#8-Перенос-корневой-системы-на-NVMe-SSD)
+9. [Правка образа (для разработчиков)](#9-правка-образа-для-разработчиков)
+10. [Сборка модуля ядра в изолированном окружении](#10-сборка-модуля-ядра-в-изолированном-окружении)
 ---
 
 ## 1. Подготовка образа ALT
 
 Скачайте готовый образ по ссылке:
 **https://drive.google.com/file/d/1EYy8IOPYLfwR-y8LBtrwSR2bKB41WAsQ/view?usp=sharing**
+
 Сохраните архив в директорию `~/alt-visionfive2/image` и проверьте
 контрольную сумму:
 
@@ -269,7 +275,7 @@ $ echo 'export KDIR=/lib/modules/$(uname -r)/build' >> ~/.bashrc
 
 ---
 
-## 8. Перенос корневой системы на NVMe SSD (опционально)
+## 8. Перенос корневой системы на NVMe SSD
 Если в плату установлен NVMe SSD, можно перенести на него корневую
 файловую систему — это значительно ускорит сборку модулей и работу
 с файлами по сравнению с SD-картой.
@@ -602,6 +608,213 @@ $ sudo losetup -d $DEVICE
 > Если на хост-машине используется LVM — безопаснее заменить на
 > `sudo kpartx -d $DEVICE`, который удаляет только маппинги конкретного
 > образа.
+
+---
+
+## 10. Сборка модуля ядра в изолированном окружении
+
+Этот раздел описывает, как собрать отдельный модуль ядра (`.ko`)
+в изолированном окружении [gear-hsh-wrapper](https://github.com/kovalev0/gear-hsh-wrapper)
+и установить его на рабочей системе. Пример актуален для случаев,
+когда нужный модуль не включён в поставляемое ядро — например,
+`iptable_raw`, необходимый для работы Docker.
+
+### 10.1 Подготовка окружения
+
+Если `gear-hsh-wrapper` ещё не установлен (*по-умолчанию*) — следуйте
+инструкции в его [README](https://github.com/kovalev0/gear-hsh-wrapper),
+либо выполните следующие команды:
+
+```bash
+# Начальная настройка системы
+$ sudo apt-get update
+$ sudo apt-get install -y hasher gear qemu-user-binfmt_misc git
+$ sudo hasher-useradd user
+$ sudo sh -c "echo 'prefix=~:/tmp/.private' >> /etc/hasher-priv/system"
+$ sudo sh -c "echo 'allowed_mountpoints=/proc,/dev/pts,/sys,/dev/shm' >> /etc/hasher-priv/system"
+$ sudo sh -c "echo 'allowed_devices=/dev/kvm' >> /etc/hasher-priv/system"
+$ sudo sh -c "echo 'allow_ttydev=yes' >> /etc/hasher-priv/system"
+$ sudo systemctl restart hasher-privd.service
+$ mkdir -p ~/.hasher
+$ echo "install_resolver_configuration_files=1" > ~/.hasher/config
+$ echo "wlimit_time_short=180" >> ~/.hasher/config
+
+# Установка gear-hsh-wrapper
+$ git clone https://github.com/kovalev0/gear-hsh-wrapper.git
+$ cd gear-hsh-wrapper
+$ ./install.sh
+```
+
+### 10.2 Установка исходников ядра в окружение
+
+> Перелогиньтесь — hasher-useradd добавляет пользователя в новые группы.
+
+```bash
+# Склонируйте репозиторий ядра
+$ cd ~
+$ git clone --branch alt-JH7110_VisionFive2_6.12.y_devel git://git.altlinux.org/people/kovalev/packages/kernel-image.git
+$ cd kernel-image
+
+# Укажите вариант (flavour) ядра
+$ git config --add gear.specsubst.kflavour 6.12
+
+# Запустите процесс сборки
+$ gear-hsh-wrapper-sisyphus-riscv64 build
+```
+
+После выполнения последней команды начнется полная сборка rpm пакета,
+включая полную сборку ядра. Однако, нас интересует только сборка
+конкретного модуля, поэтому, нужно дождаться начала сборки ядра
+(**Executing(%build)**) и остановиться (Ctrl + С):
+
+```
+Executing(%build): /bin/sh -e /usr/src/tmp/rpm-tmp.54673
++ umask 022
++ /bin/mkdir -p /usr/src/RPM/BUILD
++ cd /usr/src/RPM/BUILD
++ cd kernel-image-6.12-6.12.74-alt1.forge.rv64/kernel-source-6.12
++ banner build
+
+######   #     #  ###  #        ######   
+#     #  #     #   #   #        #     #  
+#     #  #     #   #   #        #     #  
+######   #     #   #   #        #     #  
+#     #  #     #   #   #        #     #  
+#     #  #     #   #   #        #     #  
+######    #####   ###  #######  ###### 
+^C
+```
+
+Теперь в нашем hasher-окружении `sisyphus-riscv64` установлены все
+зависимости для сборки. Если требуется установить дополнительные
+пакеты, например, редактор `nano`, выполните:
+
+```bash
+$ gear-hsh-wrapper-sisyphus-riscv64 install nano
+```
+
+### 10.3 Получение .config и Module.symvers с платы
+
+Эти два файла привязывают сборку к конкретному запущенному ядру — без
+них модули не будут совместимы с системой.
+
+```bash
+$ zcat /proc/config.gz > ./config.orig
+$ cp /usr/src/linux-$(uname -r)/Module.symvers .
+
+# Копируем файлы внутрь окружения hasher
+$ cp ./config.orig    ~/hasher/sisyphus-riscv64/chroot/usr/src/
+$ cp ./Module.symvers ~/hasher/sisyphus-riscv64/chroot/usr/src/
+```
+
+### 10.4 Вход в окружение и переход к исходникам ядра
+
+```bash
+$ gear-hsh-wrapper-sisyphus-riscv64 shell
+```
+
+Внутри окружения исходники ядра находятся в:
+
+```
+/usr/src/RPM/BUILD/kernel-image-6.12-6.12.74-alt1.forge.rv64/kernel-source-6.12/
+```
+
+```bash
+[builder@localhost .in]$ cd /usr/src/RPM/BUILD/kernel-image-6.12-*/kernel-source-6.12/
+```
+
+### 10.5 Применение конфига и Module.symvers
+
+```bash
+[builder@localhost kernel-source-6.12]$ cp ~/config.orig .config
+[builder@localhost kernel-source-6.12]$ cp ~/Module.symvers .
+
+[builder@localhost kernel-source-6.12]$ make ARCH=riscv olddefconfig
+# Ожидаемый вывод: No change to .config
+```
+
+### 10.6 Включение нужного модуля ядра
+
+Проверяем текущее состояние нужной опции:
+
+```bash
+[builder@localhost kernel-source-6.12]$ grep IP_NF_RAW .config
+# CONFIG_IP_NF_RAW is not set   ← модуль выключен
+```
+
+Включаем как модуль (`=m`):
+
+```bash
+[builder@localhost kernel-source-6.12]$ ./scripts/config --module CONFIG_IP_NF_RAW
+[builder@localhost kernel-source-6.12]$ make ARCH=riscv olddefconfig
+```
+
+### 10.7 Сборка модуля ядра
+
+Важный нюанс синтаксиса make: директорию нужно указывать **без** префикса
+`modules/` и **без** слеша в конце — именно такой формат принудительно
+пересобирает цель:
+
+```bash
+# Шаг 1: компилируем объектные файлы
+[builder@localhost kernel-source-6.12]$ make ARCH=riscv net/ipv4/netfilter/ -j$(nproc) 
+
+# Шаг 2: линкуем .ko
+[builder@localhost kernel-source-6.12]$ make ARCH=riscv M=net/ipv4/netfilter/ modules -j$(nproc)
+```
+
+Проверяем результат:
+
+```bash
+[builder@localhost kernel-source-6.12]$ find net/ipv4/netfilter/ -name '*.ko'
+net/ipv4/netfilter/iptable_raw.ko
+net/ipv4/netfilter/ip_tables.ko
+net/ipv4/netfilter/iptable_filter.ko
+# и другие
+```
+
+### 10.8 Установка модуля ядра
+
+Выходим из окружения и копируем `.ko` с изолированного окружения в каталог
+модулей ядра. Собранные модули лежат внутри chroot по пути:
+
+```
+~/hasher/sisyphus-riscv64/chroot/usr/src/RPM/BUILD/kernel-image-6.12-.../kernel-source-6.12/
+```
+
+```bash
+# Задаём путь к собранным модулям
+$ KO_PATH=~/hasher/sisyphus-riscv64/chroot/usr/src/RPM/BUILD/\
+kernel-image-6.12-6.12.74-alt1.forge.rv64/kernel-source-6.12/net/ipv4/netfilter
+
+# Копируем (устанавливаем)
+$ sudo cp $KO_PATH/iptable_raw.ko $KO_PATH/ip_tables.ko \
+  /lib/modules/$(uname -r)/kernel/net/ipv4/netfilter/
+
+# Обновляем таблицу зависимостей
+$ sudo depmod -a
+
+# Загружаем модуль
+$ sudo modprobe iptable_raw
+
+# Проверяем
+$ lsmod | grep iptable
+```
+
+### 10.9 Автозагрузка модуля при старте системы
+
+```bash
+$ echo 'iptable_raw' | sudo tee /etc/modules-load.d/docker.conf
+```
+
+### 10.10 Проверка Docker
+
+> Установите [docker](https://www.altlinux.org/Docker)
+
+```bash
+$ docker run --rm -it registry.altlinux.org/sisyphus/alt
+[root@ /]# apt-get update
+```
 
 ---
 
