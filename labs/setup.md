@@ -23,6 +23,7 @@
 8. [Перенос корневой системы на NVMe SSD](#8-Перенос-корневой-системы-на-NVMe-SSD)
 9. [Правка образа (для разработчиков)](#9-правка-образа-для-разработчиков)
 10. [Сборка модуля ядра в изолированном окружении](#10-сборка-модуля-ядра-в-изолированном-окружении)
+11. [Отладка ядра и модулей через KGDB](#11-отладка-ядра-и-модулей-через-kgdb)
 ---
 
 ## 1. Подготовка образа ALT
@@ -816,6 +817,370 @@ $ docker run --rm -it registry.altlinux.org/sisyphus/alt
 [root@ /]# apt-get update
 ```
 
+---
+
+## 11. Отладка ядра и модулей через KGDB
+ 
+KGDB позволяет отлаживать ядро и модули удалённо с хост-машины (например, x86_64) через
+UART-соединение. GDB на хосте подключается к ядру платы по протоколу GDB remote serial.
+ 
+### 11.1 Необходимые опции ядра
+ 
+Для работы KGDB ядро должно быть собрано со следующими опциями:
+ 
+```
+CONFIG_KGDB=y                  # поддержка KGDB (только built-in, не модуль)
+CONFIG_KGDB_SERIAL_CONSOLE=y   # транспорт через UART
+CONFIG_DEBUG_INFO=y            # символы отладки в vmlinux
+CONFIG_FRAME_POINTER=y         # корректные backtrace
+CONFIG_MAGIC_SYSRQ=y           # sysrq для остановки ядра (echo g)
+ 
+# Обязательно ОТКЛЮЧИТЬ для работы software breakpoints в модулях:
+# CONFIG_STRICT_KERNEL_RWX is not set
+# CONFIG_STRICT_MODULE_RWX is not set
+```
+
+> **Почему нужно отключить `STRICT_*_RWX`:** эти опции делают `.text`-секции
+> ядра и модулей недоступными для записи после загрузки. KGDB вставляет
+> `ebreak`-инструкцию прямо в код — без доступа на запись брейкпоинты
+> устанавливаются, но никогда не срабатывают. Hardware breakpoints (`hbreak`)
+> тоже не помогут — JH7110 поддерживает только 2 hardware trigger, которые
+> обычно уже заняты ядром.
+
+Готовые пакеты отладочного ядра (с этими опциями и отдельным flavour `6.12.kgdb`),
+собранные из исходного кода ветки [alt-JH7110_VisionFive2_6.12.y_devel.kgdb](https://git.altlinux.org/people/kovalev/packages/kernel-image.git?p=kernel-image.git;a=shortlog;h=refs/heads/alt-JH7110_VisionFive2_6.12.y_devel.kgdb),
+можете скачать архивом по ссылке [https://drive.google.com/file/d/1G1fuiwX5XZuqfP0opIi1cA2RJOBefKN0/view?usp=sharing].
+
+Архив содержит следующие пакеты:
+```
+kernel-headers-6.12.kgdb-6.12.74-alt1.forge.rv64.riscv64.rpm
+kernel-headers-modules-6.12.kgdb-6.12.74-alt1.forge.rv64.riscv64.rpm
+kernel-image-6.12.kgdb-6.12.74-alt1.forge.rv64.riscv64.rpm
+kernel-image-6.12.kgdb-debuginfo-6.12.74-alt1.forge.rv64.riscv64.rpm
+kernel-modules-drm-6.12.kgdb-6.12.74-alt1.forge.rv64.riscv64.rpm
+kernel-modules-drm-6.12.kgdb-debuginfo-6.12.74-alt1.forge.rv64.riscv64.rpm
+```
+
+### 11.2 Установка отладочного ядра на плату
+
+```bash
+# Устанавливаем ядро, DRM-модули и заголовки
+$ tar -xf 6.12.74.kgdb.tar.gz
+$ cd 6.12.74.kgdb
+$ sudo apt-get install -y \
+    ./kernel-image-6.12.kgdb-6.12.74-alt1.forge.rv64.riscv64.rpm \
+    ./kernel-modules-drm-6.12.kgdb-6.12.74-alt1.forge.rv64.riscv64.rpm \
+    ./kernel-headers-modules-6.12.kgdb-6.12.74-alt1.forge.rv64.riscv64.rpm
+```
+
+Перенесите загрузочные файлы ядра (vmlinuz, initrd, .dtb) в каталог зугрузочной sd-карты:
+
+```bash
+$ sudo mkdir /boot/BOOT/6.12.74-6.12.kgdb-alt1.forge.rv64
+$ sudo /boot/vmlinuz-6.12.74-6.12.kgdb-alt1.forge.rv64 /boot/BOOT/6.12.74-6.12.kgdb-alt1.forge.rv64/vmlinuz
+$ sudo cp /boot/initrd-6.12.74-6.12.kgdb-alt1.forge.rv64.img /boot/BOOT/6.12.74-6.12.kgdb-alt1.forge.rv64/initrd.img
+$ sudo cp /boot/devicetree/6.12.74-6.12.kgdb-alt1.forge.rv64/starfive/jh7110-starfive-visionfive-2-v1.3b.dtb /boot/BOOT/6.12.74-6.12.kgdb-alt1.forge.rv64/
+```
+и добавьте запись в extlinux.conf, одновременно выбрав это ядро для загрузки по-умолчанию,
+добавив метку `label l0`, а старую запись переименуйте в `label l1`:
+
+```
+label l0
+    menu label ALT Linux 6.12.74-6.12.kgdb-alt1.forge.rv64
+    linux  /6.12.74-6.12.kgdb-alt1.forge.rv64/vmlinuz
+    initrd /6.12.74-6.12.kgdb-alt1.forge.rv64/initrd.img
+    fdtdir /6.12.74-6.12.kgdb-alt1.forge.rv64/
+
+    append root=/dev/mmcblk1p4 rw console=ttyS0,115200 console=tty0 earlycon rootwait stmmaceth=chain_mode:1 audit=0 selinux=0
+```
+
+Перезагрузите плату и проверьте что загружено правильное ядро:
+ 
+```bash
+$ uname -r
+# Ожидаемый вывод: 6.12.74-6.12.kgdb-alt1.forge.rv64
+```
+
+Активируйте KGDB через UART:
+
+```bash
+$ echo ttyS0 | sudo tee /sys/module/kgdboc/parameters/kgdboc
+```
+
+### 11.3 Подготовка хоста
+
+#### Установка gdb-multiarch
+
+Штатный `gdb` в ALT собран только для ограниченного набора архитектур и не умеет
+работать с RISC-V таргетом, поэтому нужно установить новые пакеты. Можете либо
+воспользоваться уже собранными пакетами по ссылке [https://drive.google.com/file/d/1sKdbWD4BP411jiBqg1lh2k6QopHkLCX9/view?usp=sharing],
+либо самостоятельно пересобрать пакет с флагом `--enable-targets=all`:
+
+- добавьте в `%define configure_opts` в spec-файле пакета `gdb`:
+ 
+```
+--enable-targets=all \
+```
+ 
+- пересоберите (например, через `gear-hsh-wrapper` на хосте) и установите.
+ 
+Проверка:
+ 
+```bash
+$ gdb -ex 'set architecture riscv:rv64' -ex quit
+# Не должно быть ошибки "Undefined item"
+```
+ 
+#### Извлечение vmlinux из debuginfo-пакета
+ 
+`vmlinux` содержит символы отладки ядра и необходим для KGDB. Извлекаем из
+rpm-пакета:
+ 
+```bash
+$ cat kernel-image-6.12.kgdb-debuginfo-6.12.74-alt1.forge.rv64.riscv64.rpm \
+    | rpm2cpio \
+    | cpio -imdv \
+    "./usr/lib/debug/lib/modules/6.12.74-6.12.kgdb-alt1.forge.rv64/vmlinux"
+```
+ 
+Файл появится по пути `./usr/lib/debug/lib/modules/.../vmlinux`.
+ 
+#### Установка gdb-dashboard (опционально)
+ 
+[gdb-dashboard](https://github.com/cyrus-and/gdb-dashboard) — удобный TUI для GDB с
+подсветкой исходного кода, стека и переменных.
+ 
+```bash
+# Устанавливаем поддержку подсветки синтаксиса
+$ sudo apt-get install python3-module-Pygments
+ 
+# Скачиваем dashboard
+$ wget -q -P ~/ https://github.com/cyrus-and/gdb-dashboard/raw/master/.gdbinit
+$ mkdir -p ~/.gdbinit.d
+```
+ 
+Создайте файл настроек `~/.gdbinit.d/init`:
+ 
+```
+dashboard -layout source stack !threads expressions variables !registers !assembly
+dashboard stack -style limit 3
+dashboard source -style height 30
+ 
+# set substitute-path /home/user/labs ~/labs
+set serial baud 115200
+```
+ 
+> `set substitute-path` — замена префикса пути к исходникам. Например, модуль собирался
+> на плате в `/home/user/labs/...`, а на хосте исходники лежат в другом месте.
+> GDB автоматически подставит правильный путь при показе кода.
+ 
+### 11.4 Запуск сессии отладки
+ 
+**Шаг 1. На плате** — остановите ядро для подключения GDB:
+ 
+```bash
+$ echo g | sudo tee /proc/sysrq-trigger
+# Плата зависнет — это нормально, ядро ждёт GDB
+```
+ 
+**Шаг 2. На хосте** — запустите GDB и подключитесь (вместо `(gdb)` будет `>>>`, если
+используете gdb dashboard):
+
+```bash
+$ gdb ./usr/lib/debug/lib/modules/6.12.74-6.12.kgdb-alt1.forge.rv64/vmlinux
+(gdb) set serial baud 115200
+(gdb) set architecture riscv:rv64
+(gdb) target remote /dev/ttyUSB0
+```
+ 
+После подключения GDB покажет текущее местоположение ядра:
+ 
+```
+0xffffffff8000eb02 in arch_kgdb_breakpoint () at arch/riscv/kernel/kgdb.c:259
+```
+
+Чтобы продолжить выполнение кода ядра, введите `continue` или `c`:
+```bash
+(gdb) c
+```
+ 
+**Шаг 3.** Загрузите символы отлаживаемого модуля.
+
+Например, рассмотрим отладку модуля `my_counter` из урока 4 `lab04-kernel-module` [module3-counter-module.md](module3-counter-module.md).
+
+Пересоберите, затем загрузите модуль на плате и считайте адреса секций:
+
+```bash
+# На плате
+$ pwd
+/home/user/labs/lab04/my_counter
+$ make
+make -C /lib/modules/6.12.74-6.12.kgdb-alt1.forge.rv64/build M=/home/user/labs/lab04/my_counter modules
+make[1]: вход в каталог «/usr/src/linux-6.12.74-6.12.kgdb-alt1.forge.rv64»
+  CC [M]  /home/user/labs/lab04/my_counter/my_counter.o
+  MODPOST /home/user/labs/lab04/my_counter/Module.symvers
+  CC [M]  /home/user/labs/lab04/my_counter/my_counter.mod.o
+  CC [M]  /home/user/labs/lab04/my_counter/.module-common.o
+  LD [M]  /home/user/labs/lab04/my_counter/my_counter.ko
+  BTF [M] /home/user/labs/lab04/my_counter/my_counter.ko
+Skipping BTF generation for /home/user/labs/lab04/my_counter/my_counter.ko due to unavailability of vmlinux
+make[1]: выход из каталога «/usr/src/linux-6.12.74-6.12.kgdb-alt1.forge.rv64»
+$
+$ sudo insmod ./my_counter.ko 
+$ sudo cat /sys/module/my_counter/sections/.text
+0xffffffff02271000
+$ sudo cat /sys/module/my_counter/sections/.data
+0xffffffff0227d060
+```
+
+На хосте:
+
+```bash
+# Копируем каталог с исходниками и артефактами в рабочий каталог запуска GDB
+$ scp -r riscv:/home/user/labs/lab04/my_counter .
+```
+
+В GDB:
+ 
+```
+# Сообщаем пути к исходникам (иначе ошибка: Cannot display "my_counter.c")
+(gdb) set substitute-path /home/user/labs/lab04/my_counter ./my_counter
+# Указываем адреса размещения кода модуля ядра
+(gdb) add-symbol-file ./my_counter/my_counter.ko 0xffffffff02271000 \
+      -s .data 0xffffffff0227d060
+```
+ 
+> **Важно:** адреса секций *иногда* меняются при каждом `insmod`. Всегда берите
+> актуальные значения из `/sys/module/<name>/sections/` после загрузки модуля
+> и никогда не делайте `rmmod`/`insmod` между получением адресов и сессией GDB.
+ 
+**Шаг 4.** Установите брейкпоинт и продолжите выполнение:
+ 
+```
+(gdb) break my_counter_reset_store
+(gdb) c
+```
+ 
+**Шаг 5. На плате** — триггерите нужную функцию (без `echo g`):
+ 
+```bash
+$ echo 1 | sudo tee /sys/kernel/my_counter/reset
+```
+ 
+GDB остановится автоматически когда выполнение дойдёт до брейкпоинта:
+```gdb
+─── Output/messages ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+Thread 254 hit Breakpoint 7.2, my_counter_reset_store (kobj=0xffffffd6c289d980, attr=0xffffffff0227d0d0 <my_counter_reset_attr>, 
+    buf=0xffffffd6c20d0bc8 "1\n", count=2) at /home/user/labs/lab04/my_counter/my_counter.c:120
+120     {
+─── Source ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 105      if (val == 1)
+ 106          my_counter_do_increment();
+ 107      return count;
+ 108  }
+ 109  
+ 110  /* --- reset --- */
+ 111  static ssize_t my_counter_reset_show(struct kobject *kobj,
+ 112                       struct kobj_attribute *attr, char *buf)
+ 113  {
+ 114      return sysfs_emit(buf, "write 1 to reset counter\n");
+ 115  }
+ 116  
+ 117  static ssize_t my_counter_reset_store(struct kobject *kobj,
+ 118                        struct kobj_attribute *attr,
+ 119                        const char *buf, size_t count)
+!120  {
+ 121      unsigned int val;
+ 122      int ret = kstrtouint(buf, 10, &val);
+ 123      if (ret)
+ 124          return ret;
+ 125      if (val == 1)
+ 126          my_counter_do_reset();
+ 127      return count;
+ 128  }
+ 129  
+ 130  /* --- trigger --- */
+ 131  static ssize_t my_counter_trigger_show(struct kobject *kobj,
+ 132                         struct kobj_attribute *attr, char *buf)
+ 133  {
+ 134      return sysfs_emit(buf, "%d\n", my_counter_trigger);
+─── Stack ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+[0] from 0xffffffff02271126 in my_counter_reset_store+0 at /home/user/labs/lab04/my_counter/my_counter.c:120
+[1] from 0xffffffff80e672ae in kobj_attr_store+14 at lib/kobject.c:840
+[2] from 0xffffffff8030f7f8 in sysfs_kf_write+42 at fs/sysfs/file.c:136
+[+]
+─── Expressions ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+─── Variables ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+arg kobj = 0xffffffd6c289d980: {name = 0xffffffd6e1579580 "my_counter",entry = {next = 0xffffffd6c289d…, attr = 0xffffffff0227d0d0 <my_counter_reset_attr>: {attr = {name = 0xffffffff022811f8 "reset",mode…, buf = 0xffffffd6c20d0bc8 "1\n": 49 '1', count = 2
+loc val = 4294967254, ret = <optimized out>
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+>>>
+```
+ 
+### 11.5 Как остановить ядро в произвольный момент
+ 
+Пока ядро работает, GDB ждёт и не принимает команды. Ctrl+C в GDB на RISC-V
+не работает. Единственный способ — отправить `sysrq` с платы:
+ 
+```bash
+# На плате (в отдельном SSH-сеансе)
+$ echo g | sudo tee /proc/sysrq-trigger
+```
+
+### 11.6 Оптимизация и отладка модулей
+
+#### Почему нельзя просто `-O0`
+
+Ядро Linux написано с расчётом на компиляцию с оптимизацией. Часть кода
+использует `inline`-функции и конструкции которые при `-O0` либо не
+компилируются вовсе, либо дают неправильный код — неверно работает стек,
+атомарные операции, memory barrier'ы. Поэтому ядро **всегда** собирается
+минимум с `-O2`, и это требование нельзя снять.
+ 
+Следствие для отладчика: при `-O2` компилятор агрессивно оптимизирует код —
+переменные исчезают (оседают в регистрах или вовсе выбрасываются), строки
+исходника перестают соответствовать инструкциям, функции инлайнятся и
+пропадают из таблицы символов. GDB показывает `<optimized out>` вместо
+значений переменных.
+ 
+#### Флаг `-Og` — компромисс для отладки
+ 
+GCC предоставляет специальный уровень `-Og` введённый именно для отладки.
+Он включает только те оптимизации которые не мешают отладчику: переменные
+сохраняются, порядок инструкций близок к исходнику, но код остаётся
+корректным с точки зрения ядра. Это лучший выбор когда нужна отладка, но
+`-O0` неприемлем.
+ 
+#### Флаги для пользовательского модуля
+ 
+Для полного отключения оптимизации в своём модуле добавьте в `Makefile`:
+ 
+```makefile
+ccflags-y := -g -Og -fno-inline
+```
+ 
+`-fno-inline` важен отдельно — без него GCC инлайнит маленькие функции
+даже при `-Og`, и они исчезают из отладчика как самостоятельные символы.
+ 
+Если нужно отключить оптимизацию только для конкретного файла не затрагивая
+остальные:
+ 
+```makefile
+CFLAGS_my_counter.o := -g -Og -fno-inline
+```
+ 
+Проверьте что флаги применились:
+ 
+```bash
+$ make V=1 2>&1 | grep 'my_counter.o'
+# В выводе должны быть -Og -fno-inline
+```
+ 
+> **Итоговая рекомендация:** для отладки модуля используйте `-Og -fno-inline`.
+> Для ядра целиком изменить уровень оптимизации нельзя, но можно пересобрать
+> конкретный файл ядра с нужными флагами через `CFLAGS_имяфайла.o`.
+ 
 ---
 
 [На главную](INDEX.md) · [Урок 01 →](lab01-board/README.md)
