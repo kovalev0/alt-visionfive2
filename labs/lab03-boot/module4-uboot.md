@@ -177,10 +177,10 @@ fdtfile        — имя файла DTB (автоопределяется ил�
 
 ```
 label l00
-    menu label ALT Linux 6.12.74-6.12-alt1.forge.rv64
-    linux  /6.12.74-6.12-alt1.forge.rv64/vmlinuz
-    initrd /6.12.74-6.12-alt1.forge.rv64/initrd.img
-    fdtdir /6.12.74-6.12-alt1.forge.rv64/
+    menu label ALT Linux 6.12.77-6.12-alt1.forge.rv64
+    linux  /6.12.77-6.12-alt1.forge.rv64/vmlinuz
+    initrd /6.12.77-6.12-alt1.forge.rv64/initrd.img
+    fdtdir /6.12.77-6.12-alt1.forge.rv64/
 
     append root=/dev/mmcblk1p4 rw console=tty0 console=ttyS0,115200 \
            earlycon rootwait stmmaceth=chain_mode:1 selinux=0
@@ -268,7 +268,7 @@ StarFive # fatls mmc 1:3
     58144   jh7110-starfive-visionfive-2-v1.3b.dtb
             extlinux/
       400   uEnv.txt
-            6.12.74-6.12-alt1.forge.rv64/
+            6.12.77-6.12-alt1.forge.rv64/
 
 4 file(s), 2 dir(s)
 

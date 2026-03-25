@@ -150,13 +150,13 @@ Try booting from MMC1 ...
 400 bytes read in 8 ms (48.8 KiB/s)
 Retrieving file: /extlinux/extlinux.conf
 592 bytes read in 13 ms (43.9 KiB/s)
-1:      ALT Linux 6.12.74-6.12-alt1.forge.rv64
-Retrieving file: /6.12.74-6.12-alt1.forge.rv64/initrd.img
+1:      ALT Linux 6.12.77-6.12-alt1.forge.rv64
+Retrieving file: /6.12.77-6.12-alt1.forge.rv64/initrd.img
 9371629 bytes read in 456 ms (19.6 MiB/s)
-Retrieving file: /6.12.74-6.12-alt1.forge.rv64/vmlinuz
+Retrieving file: /6.12.77-6.12-alt1.forge.rv64/vmlinuz
 13649241 bytes read in 659 ms (19.8 MiB/s)
 append: root=/dev/mmcblk1p4 rw console=tty0 console=ttyS0,115200 earlycon rootwait stmmaceth=chain_mode:1 selinux=0~
-Retrieving file: /6.12.74-6.12-alt1.forge.rv64/jh7110-starfive-visionfive-2-v1.3b.dtb
+Retrieving file: /6.12.77-6.12-alt1.forge.rv64/jh7110-starfive-visionfive-2-v1.3b.dtb
 58144 bytes read in 17 ms (3.3 MiB/s)
    Uncompressing Kernel Image
 ## Flattened Device Tree blob at 46000000

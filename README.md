@@ -183,13 +183,13 @@ The compiled RPM packages will be available in
 ```bash
 # List of built packages at the time of writing
 $ ls ~/hasher/sisyphus-riscv64/repo/riscv64/RPMS.hasher/
-kernel-doc-6.12-6.12.74-alt1.forge.rv64.noarch.rpm
-kernel-headers-6.12-6.12.74-alt1.forge.rv64.riscv64.rpm
-kernel-headers-modules-6.12-6.12.74-alt1.forge.rv64.riscv64.rpm
-kernel-image-6.12-6.12.74-alt1.forge.rv64.riscv64.rpm
-kernel-image-6.12-debuginfo-6.12.74-alt1.forge.rv64.riscv64.rpm
-kernel-modules-drm-6.12-6.12.74-alt1.forge.rv64.riscv64.rpm
-kernel-modules-drm-6.12-debuginfo-6.12.74-alt1.forge.rv64.riscv64.rpm
+kernel-doc-6.12-6.12.77-alt1.forge.rv64.noarch.rpm
+kernel-headers-6.12-6.12.77-alt1.forge.rv64.riscv64.rpm
+kernel-headers-modules-6.12-6.12.77-alt1.forge.rv64.riscv64.rpm
+kernel-image-6.12-6.12.77-alt1.forge.rv64.riscv64.rpm
+kernel-image-6.12-debuginfo-6.12.77-alt1.forge.rv64.riscv64.rpm
+kernel-modules-drm-6.12-6.12.77-alt1.forge.rv64.riscv64.rpm
+kernel-modules-drm-6.12-debuginfo-6.12.77-alt1.forge.rv64.riscv64.rpm
 ```
 
 
@@ -201,7 +201,7 @@ Copy the required RPM packages to your VisionFive2 board and install them.
 # On the VisionFive2, install the new kernel packages
 # Required: kernel-image, kernel-modules-drm
 # Optional for development: kernel-headers-modules
-$ sudo apt-get install /path/to/rpms/{kernel-image-6.12-6.12.74-alt1.forge.rv64.riscv64.rpm,kernel-modules-drm-6.12-6.12.74-alt1.forge.rv64.riscv64.rpm,kernel-headers-modules-6.12-6.12.74-alt1.forge.rv64.riscv64.rpm}
+$ sudo apt-get install /path/to/rpms/{kernel-image-6.12-6.12.77-alt1.forge.rv64.riscv64.rpm,kernel-modules-drm-6.12-6.12.77-alt1.forge.rv64.riscv64.rpm,kernel-headers-modules-6.12-6.12.77-alt1.forge.rv64.riscv64.rpm}
 ```
 
 ### 3. Configure U-Boot to Load the New Kernel
@@ -211,7 +211,7 @@ Copy the new kernel files to a new directory on the boot partition
 
 ```bash
 # Replace with the actual kernel version
-$ KVER="6.12.74-6.12-alt1.forge.rv64"
+$ KVER="6.12.77-6.12-alt1.forge.rv64"
 
 # Create a directory for the new kernel
 $ sudo mkdir -p /boot/BOOT/$KVER
@@ -227,10 +227,10 @@ Add a new menu entry to `/boot/BOOT/extlinux/extlinux.conf`.
 ```
 # Append this to your extlinux/extlinux.conf
 label l00
-    menu label ALT Linux 6.12.74-6.12-alt1.forge.rv64
-    linux  /6.12.74-6.12-alt1.forge.rv64/vmlinuz
-    initrd /6.12.74-6.12-alt1.forge.rv64/initrd.img
-    fdtdir /6.12.74-6.12-alt1.forge.rv64/
+    menu label ALT Linux 6.12.77-6.12-alt1.forge.rv64
+    linux  /6.12.77-6.12-alt1.forge.rv64/vmlinuz
+    initrd /6.12.77-6.12-alt1.forge.rv64/initrd.img
+    fdtdir /6.12.77-6.12-alt1.forge.rv64/
 
     append root=/dev/mmcblk1p4 rw console=tty0 console=ttyS0,115200 earlycon rootwait stmmaceth=chain_mode:1 selinux=0
 ```
@@ -243,16 +243,16 @@ Retrieving file: /extlinux/extlinux.conf
 577 bytes read in 12 ms (46.9 KiB/s)
 
 U-Boot menu
-1:      ALT Linux 6.12.74-6.12-alt1.forge.rv64
+1:      ALT Linux 6.12.77-6.12-alt1.forge.rv64
 2:      Alt GNU/Linux
 Enter choice: 1
-1:      ALT Linux 6.12.74-6.12-alt1.forge.rv64
-Retrieving file: /6.12.74-6.12-alt1.forge.rv64/initrd.img
+1:      ALT Linux 6.12.77-6.12-alt1.forge.rv64
+Retrieving file: /6.12.77-6.12-alt1.forge.rv64/initrd.img
 8972696 bytes read in 777 ms (11 MiB/s)
-Retrieving file: /6.12.74-6.12-alt1.forge.rv64/vmlinuz
+Retrieving file: /6.12.77-6.12-alt1.forge.rv64/vmlinuz
 12680659 bytes read in 1092 ms (11.1 MiB/s)
 append: root=/dev/mmcblk1p4 rw console=tty0 console=ttyS0,115200 earlycon rootwait stmmaceth=chain_mode:1 selinux=0
-Retrieving file: /6.12.74-6.12-alt1.forge.rv64/jh7110-starfive-visionfive-2-v1.3b.dtb
+Retrieving file: /6.12.77-6.12-alt1.forge.rv64/jh7110-starfive-visionfive-2-v1.3b.dtb
 57011 bytes read in 17 ms (3.2 MiB/s)
    Uncompressing Kernel Image
 ## Flattened Device Tree blob at 46000000
@@ -261,7 +261,7 @@ Retrieving file: /6.12.74-6.12-alt1.forge.rv64/jh7110-starfive-visionfive-2-v1.3
 
 Starting kernel ...
 
-[    0.000000] Linux version 6.12.74-6.12-alt1.forge.rv64 (builder@localhost.localdomain) (gcc-14 (GCC) 14.3.1 20250812 (ALT Sisyphus_riscv64 14.3.1-alt0.port), GNU ld (GNU Binutils) 2.43.1.20241025) #1 SMP Mon Sep  1 12:20:06 UTC 2025
+[    0.000000] Linux version 6.12.77-6.12-alt1.forge.rv64 (builder@localhost.localdomain) (gcc-14 (GCC) 14.3.1 20250812 (ALT Sisyphus_riscv64 14.3.1-alt0.port), GNU ld (GNU Binutils) 2.43.1.20241025) #1 SMP Mon Sep  1 12:20:06 UTC 2025
 ```
 
 ---

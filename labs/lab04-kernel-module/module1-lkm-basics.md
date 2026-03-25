@@ -93,8 +93,8 @@ $ make
 Ожидаемый вывод:
 
 ```
-make -C /lib/modules/6.12.74-6.12-alt1.forge.rv64/build M=/home/user/labs/lab04/hello modules
-make[1]: вход в каталог «/usr/src/linux-6.12.74-6.12-alt1.forge.rv64»
+make -C /lib/modules/6.12.77-6.12-alt1.forge.rv64/build M=/home/user/labs/lab04/hello modules
+make[1]: вход в каталог «/usr/src/linux-6.12.77-6.12-alt1.forge.rv64»
   CC [M]  /home/user/labs/lab04/hello/hello.o
   MODPOST /home/user/labs/lab04/hello/Module.symvers
   CC [M]  /home/user/labs/lab04/hello/hello.mod.o
@@ -102,7 +102,7 @@ make[1]: вход в каталог «/usr/src/linux-6.12.74-6.12-alt1.forge.rv6
   LD [M]  /home/user/labs/lab04/hello/hello.ko
   BTF [M] /home/user/labs/lab04/hello/hello.ko
 Skipping BTF generation for /home/user/labs/lab04/hello/hello.ko due to unavailability of vmlinux
-make[1]: выход из каталога «/usr/src/linux-6.12.74-6.12-alt1.forge.rv64»
+make[1]: выход из каталога «/usr/src/linux-6.12.77-6.12-alt1.forge.rv64»
 ```
 
 Результат — файл `hello.ko` (Kernel Object).
@@ -165,7 +165,7 @@ author:         lab04
 license:        GPL
 depends:        
 name:           hello
-vermagic:       6.12.74-6.12-alt1.forge.rv64 SMP mod_unload riscv
+vermagic:       6.12.77-6.12-alt1.forge.rv64 SMP mod_unload riscv
 
 # Все загруженные модули
 $ lsmod
@@ -273,7 +273,7 @@ hello.ko:     формат файла elf64-littleriscv
  0030 3d6c6162 3034006c 6963656e 73653d47  =lab04.license=G
  0040 504c0064 6570656e 64733d00 6e616d65  PL.depends=.name
  0050 3d68656c 6c6f0076 65726d61 6769633d  =hello.vermagic=
- 0060 362e3132 2e37342d 362e3132 2d616c74  6.12.74-6.12-alt
+ 0060 362e3132 2e37342d 362e3132 2d616c74  6.12.77-6.12-alt
  0070 312e666f 7267652e 72763634 20534d50  1.forge.rv64 SMP
  0080 206d6f64 5f756e6c 6f616420 72697363   mod_unload risc
  0090 7600                                 v.
@@ -282,7 +282,7 @@ $ strings hello.ko | grep -E "license|author|description|vermagic"
 description=Minimal kernel module example
 author=lab04
 license=GPL
-vermagic=6.12.74-6.12-alt1.forge.rv64 SMP mod_unload riscv
+vermagic=6.12.77-6.12-alt1.forge.rv64 SMP mod_unload riscv
 __UNIQUE_ID_description271
 __UNIQUE_ID_author270
 __UNIQUE_ID_license269

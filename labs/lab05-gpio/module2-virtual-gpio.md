@@ -54,7 +54,7 @@ gpiochip1 [17020000.pinctrl] (4 lines)
 
 # Проверить что модуль есть в системе
 $ modinfo gpio-mockup
-filename:       /lib/modules/6.12.74-6.12-alt1.forge.rv64/kernel/drivers/gpio/gpio-mockup.ko
+filename:       /lib/modules/6.12.77-6.12-alt1.forge.rv64/kernel/drivers/gpio/gpio-mockup.ko
 license:        GPL v2
 description:    GPIO Testing driver
 author:         Bartosz Golaszewski <brgl@bgdev.pl>
@@ -65,7 +65,7 @@ alias:          of:N*T*Cgpio-mockup
 depends:        
 intree:         Y
 name:           gpio_mockup
-vermagic:       6.12.74-6.12-alt1.forge.rv64 SMP mod_unload riscv
+vermagic:       6.12.77-6.12-alt1.forge.rv64 SMP mod_unload riscv
 parm:           gpio_mockup_ranges:array of int
 parm:           gpio_mockup_named_lines:bool
 

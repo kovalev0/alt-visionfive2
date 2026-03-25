@@ -29,7 +29,7 @@
 ## 1. Подготовка образа ALT
 
 Скачайте готовый образ по ссылке:
-**https://drive.google.com/file/d/1EYy8IOPYLfwR-y8LBtrwSR2bKB41WAsQ/view?usp=sharing**
+**https://drive.google.com/file/d/1APTkK_40jZvS-hFhrGV20zVD9wph-mnk/view?usp=drive_link**
 
 Сохраните архив в директорию `~/alt-visionfive2/image` и проверьте
 контрольную сумму:
@@ -37,7 +37,7 @@
 ```bash
 $ sha256sum regular-mate-latest-riscv64-visionfive2.img.tar.xz
 # Ожидаемый результат:
-# 4e8222513d8c354c64b817a667e9773a4af0726d665f3c83f9b230a9f7af594d
+# 28d577b08aea285f63bca7f9e509aab55e25db75278063724ca6feb6f5db5507
 ```
 
 ---
@@ -216,7 +216,7 @@ $ ssh-copy-id user@<IP-адрес>
 Убедитесь, что система загружена корректно и готова к работе:
 
 ```bash
-# Проверяем версию ядра — должно быть 6.12.74-6.12-alt1.forge.rv64
+# Проверяем версию ядра — должно быть 6.12.77-6.12-alt1.forge.rv64
 $ uname -r
 
 # Проверяем архитектуру — должно быть riscv64
@@ -582,10 +582,10 @@ prompt 0
 timeout 50
 
 label l0
-    menu label ALT Linux 6.12.74-6.12-alt1.forge.rv64
-    linux  /6.12.74-6.12-alt1.forge.rv64/vmlinuz
-    initrd /6.12.74-6.12-alt1.forge.rv64/initrd.img
-    fdtdir /6.12.74-6.12-alt1.forge.rv64/
+    menu label ALT Linux 6.12.77-6.12-alt1.forge.rv64
+    linux  /6.12.77-6.12-alt1.forge.rv64/vmlinuz
+    initrd /6.12.77-6.12-alt1.forge.rv64/initrd.img
+    fdtdir /6.12.77-6.12-alt1.forge.rv64/
 
     append root=/dev/mmcblk1p4 rw console=ttyS0,115200 console=tty0 earlycon rootwait stmmaceth=chain_mode:1 selinux=0 audit=0
 ```
@@ -673,7 +673,7 @@ Executing(%build): /bin/sh -e /usr/src/tmp/rpm-tmp.54673
 + umask 022
 + /bin/mkdir -p /usr/src/RPM/BUILD
 + cd /usr/src/RPM/BUILD
-+ cd kernel-image-6.12-6.12.74-alt1.forge.rv64/kernel-source-6.12
++ cd kernel-image-6.12-6.12.77-alt1.forge.rv64/kernel-source-6.12
 + banner build
 
 ######   #     #  ###  #        ######   
@@ -717,7 +717,7 @@ $ gear-hsh-wrapper-sisyphus-riscv64 shell
 Внутри окружения исходники ядра находятся в:
 
 ```
-/usr/src/RPM/BUILD/kernel-image-6.12-6.12.74-alt1.forge.rv64/kernel-source-6.12/
+/usr/src/RPM/BUILD/kernel-image-6.12-6.12.77-alt1.forge.rv64/kernel-source-6.12/
 ```
 
 ```bash
@@ -786,7 +786,7 @@ net/ipv4/netfilter/iptable_filter.ko
 ```bash
 # Задаём путь к собранным модулям
 $ KO_PATH=~/hasher/sisyphus-riscv64/chroot/usr/src/RPM/BUILD/\
-kernel-image-6.12-6.12.74-alt1.forge.rv64/kernel-source-6.12/net/ipv4/netfilter
+kernel-image-6.12-6.12.77-alt1.forge.rv64/kernel-source-6.12/net/ipv4/netfilter
 
 # Копируем (устанавливаем)
 $ sudo cp $KO_PATH/iptable_raw.ko $KO_PATH/ip_tables.ko \
@@ -849,47 +849,47 @@ CONFIG_MAGIC_SYSRQ=y           # sysrq для остановки ядра (echo 
 
 Готовые пакеты отладочного ядра (с этими опциями и отдельным flavour `6.12.kgdb`),
 собранные из исходного кода ветки [alt-JH7110_VisionFive2_6.12.y_devel.kgdb](https://git.altlinux.org/people/kovalev/packages/kernel-image.git?p=kernel-image.git;a=shortlog;h=refs/heads/alt-JH7110_VisionFive2_6.12.y_devel.kgdb),
-можете скачать архивом по ссылке [https://drive.google.com/file/d/1G1fuiwX5XZuqfP0opIi1cA2RJOBefKN0/view?usp=sharing].
+можете скачать архивом по ссылке [https://drive.google.com/file/d/1hQls0jE2KZ8LvFeNPLLSxL0ka1TMmwrD/view?usp=sharing].
 
 Архив содержит следующие пакеты:
 ```
-kernel-headers-6.12.kgdb-6.12.74-alt1.forge.rv64.riscv64.rpm
-kernel-headers-modules-6.12.kgdb-6.12.74-alt1.forge.rv64.riscv64.rpm
-kernel-image-6.12.kgdb-6.12.74-alt1.forge.rv64.riscv64.rpm
-kernel-image-6.12.kgdb-debuginfo-6.12.74-alt1.forge.rv64.riscv64.rpm
-kernel-modules-drm-6.12.kgdb-6.12.74-alt1.forge.rv64.riscv64.rpm
-kernel-modules-drm-6.12.kgdb-debuginfo-6.12.74-alt1.forge.rv64.riscv64.rpm
+kernel-headers-6.12.kgdb-6.12.77-alt1.forge.rv64.riscv64.rpm
+kernel-headers-modules-6.12.kgdb-6.12.77-alt1.forge.rv64.riscv64.rpm
+kernel-image-6.12.kgdb-6.12.77-alt1.forge.rv64.riscv64.rpm
+kernel-image-6.12.kgdb-debuginfo-6.12.77-alt1.forge.rv64.riscv64.rpm
+kernel-modules-drm-6.12.kgdb-6.12.77-alt1.forge.rv64.riscv64.rpm
+kernel-modules-drm-6.12.kgdb-debuginfo-6.12.77-alt1.forge.rv64.riscv64.rpm
 ```
 
 ### 11.2 Установка отладочного ядра на плату
 
 ```bash
 # Устанавливаем ядро, DRM-модули и заголовки
-$ tar -xf 6.12.74.kgdb.tar.gz
-$ cd 6.12.74.kgdb
+$ tar -xf 6.12.77.kgdb.tar.gz
+$ cd 6.12.77.kgdb
 $ sudo apt-get install -y \
-    ./kernel-image-6.12.kgdb-6.12.74-alt1.forge.rv64.riscv64.rpm \
-    ./kernel-modules-drm-6.12.kgdb-6.12.74-alt1.forge.rv64.riscv64.rpm \
-    ./kernel-headers-modules-6.12.kgdb-6.12.74-alt1.forge.rv64.riscv64.rpm
+    ./kernel-image-6.12.kgdb-6.12.77-alt1.forge.rv64.riscv64.rpm \
+    ./kernel-modules-drm-6.12.kgdb-6.12.77-alt1.forge.rv64.riscv64.rpm \
+    ./kernel-headers-modules-6.12.kgdb-6.12.77-alt1.forge.rv64.riscv64.rpm
 ```
 
 Перенесите загрузочные файлы ядра (vmlinuz, initrd, .dtb) в каталог зугрузочной sd-карты:
 
 ```bash
-$ sudo mkdir /boot/BOOT/6.12.74-6.12.kgdb-alt1.forge.rv64
-$ sudo /boot/vmlinuz-6.12.74-6.12.kgdb-alt1.forge.rv64 /boot/BOOT/6.12.74-6.12.kgdb-alt1.forge.rv64/vmlinuz
-$ sudo cp /boot/initrd-6.12.74-6.12.kgdb-alt1.forge.rv64.img /boot/BOOT/6.12.74-6.12.kgdb-alt1.forge.rv64/initrd.img
-$ sudo cp /boot/devicetree/6.12.74-6.12.kgdb-alt1.forge.rv64/starfive/jh7110-starfive-visionfive-2-v1.3b.dtb /boot/BOOT/6.12.74-6.12.kgdb-alt1.forge.rv64/
+$ sudo mkdir /boot/BOOT/6.12.77-6.12.kgdb-alt1.forge.rv64
+$ sudo /boot/vmlinuz-6.12.77-6.12.kgdb-alt1.forge.rv64 /boot/BOOT/6.12.77-6.12.kgdb-alt1.forge.rv64/vmlinuz
+$ sudo cp /boot/initrd-6.12.77-6.12.kgdb-alt1.forge.rv64.img /boot/BOOT/6.12.77-6.12.kgdb-alt1.forge.rv64/initrd.img
+$ sudo cp /boot/devicetree/6.12.77-6.12.kgdb-alt1.forge.rv64/starfive/jh7110-starfive-visionfive-2-v1.3b.dtb /boot/BOOT/6.12.77-6.12.kgdb-alt1.forge.rv64/
 ```
 и добавьте запись в extlinux.conf, одновременно выбрав это ядро для загрузки по-умолчанию,
 добавив метку `label l0`, а старую запись переименуйте в `label l1`:
 
 ```
 label l0
-    menu label ALT Linux 6.12.74-6.12.kgdb-alt1.forge.rv64
-    linux  /6.12.74-6.12.kgdb-alt1.forge.rv64/vmlinuz
-    initrd /6.12.74-6.12.kgdb-alt1.forge.rv64/initrd.img
-    fdtdir /6.12.74-6.12.kgdb-alt1.forge.rv64/
+    menu label ALT Linux 6.12.77-6.12.kgdb-alt1.forge.rv64
+    linux  /6.12.77-6.12.kgdb-alt1.forge.rv64/vmlinuz
+    initrd /6.12.77-6.12.kgdb-alt1.forge.rv64/initrd.img
+    fdtdir /6.12.77-6.12.kgdb-alt1.forge.rv64/
 
     append root=/dev/mmcblk1p4 rw console=ttyS0,115200 console=tty0 earlycon rootwait stmmaceth=chain_mode:1 audit=0 selinux=0
 ```
@@ -898,7 +898,7 @@ label l0
  
 ```bash
 $ uname -r
-# Ожидаемый вывод: 6.12.74-6.12.kgdb-alt1.forge.rv64
+# Ожидаемый вывод: 6.12.77-6.12.kgdb-alt1.forge.rv64
 ```
 
 Активируйте KGDB через UART:
@@ -937,10 +937,10 @@ $ gdb -ex 'set architecture riscv:rv64' -ex quit
 rpm-пакета:
  
 ```bash
-$ cat kernel-image-6.12.kgdb-debuginfo-6.12.74-alt1.forge.rv64.riscv64.rpm \
+$ cat kernel-image-6.12.kgdb-debuginfo-6.12.77-alt1.forge.rv64.riscv64.rpm \
     | rpm2cpio \
     | cpio -imdv \
-    "./usr/lib/debug/lib/modules/6.12.74-6.12.kgdb-alt1.forge.rv64/vmlinux"
+    "./usr/lib/debug/lib/modules/6.12.77-6.12.kgdb-alt1.forge.rv64/vmlinux"
 ```
  
 Файл появится по пути `./usr/lib/debug/lib/modules/.../vmlinux`.
@@ -987,7 +987,7 @@ $ echo g | sudo tee /proc/sysrq-trigger
 используете gdb dashboard):
 
 ```bash
-$ gdb ./usr/lib/debug/lib/modules/6.12.74-6.12.kgdb-alt1.forge.rv64/vmlinux
+$ gdb ./usr/lib/debug/lib/modules/6.12.77-6.12.kgdb-alt1.forge.rv64/vmlinux
 (gdb) set serial baud 115200
 (gdb) set architecture riscv:rv64
 (gdb) target remote /dev/ttyUSB0
@@ -1015,8 +1015,8 @@ $ gdb ./usr/lib/debug/lib/modules/6.12.74-6.12.kgdb-alt1.forge.rv64/vmlinux
 $ pwd
 /home/user/labs/lab04/my_counter
 $ make
-make -C /lib/modules/6.12.74-6.12.kgdb-alt1.forge.rv64/build M=/home/user/labs/lab04/my_counter modules
-make[1]: вход в каталог «/usr/src/linux-6.12.74-6.12.kgdb-alt1.forge.rv64»
+make -C /lib/modules/6.12.77-6.12.kgdb-alt1.forge.rv64/build M=/home/user/labs/lab04/my_counter modules
+make[1]: вход в каталог «/usr/src/linux-6.12.77-6.12.kgdb-alt1.forge.rv64»
   CC [M]  /home/user/labs/lab04/my_counter/my_counter.o
   MODPOST /home/user/labs/lab04/my_counter/Module.symvers
   CC [M]  /home/user/labs/lab04/my_counter/my_counter.mod.o
@@ -1024,7 +1024,7 @@ make[1]: вход в каталог «/usr/src/linux-6.12.74-6.12.kgdb-alt1.forg
   LD [M]  /home/user/labs/lab04/my_counter/my_counter.ko
   BTF [M] /home/user/labs/lab04/my_counter/my_counter.ko
 Skipping BTF generation for /home/user/labs/lab04/my_counter/my_counter.ko due to unavailability of vmlinux
-make[1]: выход из каталога «/usr/src/linux-6.12.74-6.12.kgdb-alt1.forge.rv64»
+make[1]: выход из каталога «/usr/src/linux-6.12.77-6.12.kgdb-alt1.forge.rv64»
 $
 $ sudo insmod ./my_counter.ko 
 $ sudo cat /sys/module/my_counter/sections/.text
