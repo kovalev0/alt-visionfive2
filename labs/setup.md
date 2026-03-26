@@ -40,6 +40,13 @@ $ sha256sum regular-mate-latest-riscv64-visionfive2.img.tar.xz
 # 28d577b08aea285f63bca7f9e509aab55e25db75278063724ca6feb6f5db5507
 ```
 
+> Текущая версия ядра - **6.12.77** ([репозиторий](https://git.altlinux.org/people/kovalev/packages/kernel-image.git?p=kernel-image.git;a=shortlog;h=refs/heads/alt-JH7110_VisionFive2_6.12.y_devel-6.12.77)).
+
+> Архив с rpm пакетами: [6.12.77.tar.gz](https://drive.google.com/file/d/1R8HTj-r8UlAaRLnXUTUl8V1OHExCj4qK/view?usp=sharing).
+
+> Вы можете обновить ядро вручную, следуя инструкциям в секции
+> [11.2 Установка отладочного ядра на плату](#112-установка-отладочного-ядра-на-плату),
+> заменяя в командах суффикс `6.12.kgdb` на `6.12`.
 ---
 
 ## 2. Запись образа на micro-SD карту
