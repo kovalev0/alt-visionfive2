@@ -884,7 +884,7 @@ $ sudo apt-get install -y \
 
 ```bash
 $ sudo mkdir /boot/BOOT/6.12.77-6.12.kgdb-alt1.forge.rv64
-$ sudo /boot/vmlinuz-6.12.77-6.12.kgdb-alt1.forge.rv64 /boot/BOOT/6.12.77-6.12.kgdb-alt1.forge.rv64/vmlinuz
+$ sudo cp /boot/vmlinuz-6.12.77-6.12.kgdb-alt1.forge.rv64 /boot/BOOT/6.12.77-6.12.kgdb-alt1.forge.rv64/vmlinuz
 $ sudo cp /boot/initrd-6.12.77-6.12.kgdb-alt1.forge.rv64.img /boot/BOOT/6.12.77-6.12.kgdb-alt1.forge.rv64/initrd.img
 $ sudo cp /boot/devicetree/6.12.77-6.12.kgdb-alt1.forge.rv64/starfive/jh7110-starfive-visionfive-2-v1.3b.dtb /boot/BOOT/6.12.77-6.12.kgdb-alt1.forge.rv64/
 ```
