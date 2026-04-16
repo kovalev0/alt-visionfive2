@@ -880,7 +880,7 @@ $ sudo apt-get install -y \
     ./kernel-headers-modules-6.12.kgdb-6.12.77-alt1.forge.rv64.riscv64.rpm
 ```
 
-Перенесите загрузочные файлы ядра (vmlinuz, initrd, .dtb) в каталог зугрузочной sd-карты:
+Перенесите загрузочные файлы ядра (vmlinuz, initrd, .dtb) в каталог загрузочной sd-карты:
 
 ```bash
 $ sudo mkdir /boot/BOOT/6.12.77-6.12.kgdb-alt1.forge.rv64
